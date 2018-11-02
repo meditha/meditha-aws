@@ -25,7 +25,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
 
-public class AuthorListFunctionHandler implements RequestStreamHandler, Constants {
+public class ReferenceManuscriptListFunctionHandler implements RequestStreamHandler, Constants {
 
 	JSONParser parser = new JSONParser();
 	@Override
@@ -50,11 +50,11 @@ public class AuthorListFunctionHandler implements RequestStreamHandler, Constant
 			}		
 
 			MongoDatabase database = mongoClient.getDatabase(MONGO_DATABASE);
-			MongoCollection<Document> collection = database.getCollection(MONGO_AUTHOR_COLLECTION);
+			MongoCollection<Document> collection = database.getCollection(MONGO_REFERENCE_MANUSCRIPT_COLLECTION);
 
 			int pageSize = 10;
 			long hits = collection.countDocuments();
-			FindIterable<Document> documents = collection.find().skip(pageSize*(pageNumber-1)).limit(pageSize).sort(Sorts.orderBy(Sorts.ascending("name")));
+			FindIterable<Document> documents = collection.find().skip(pageSize*(pageNumber-1)).limit(pageSize).sort(Sorts.orderBy(Sorts.ascending("cote")));
 			json = StreamSupport.stream(documents.spliterator(), false)
 					.map(Document::toJson)
 					.collect(Collectors.joining(", ", "[", "]"));
